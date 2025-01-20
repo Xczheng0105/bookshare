@@ -13,12 +13,20 @@ Home
 <br>
 <h2 align ="center">Exchange offers available:</h2>
 
-<table class="table">
+<table class="table", style="text-align: center;">
     <tr align="center">
         <th>Title</th>
         <th>Author</th>
         <th>Uploaded by:</th>
         <th></th>
     </tr>
+    {% for row in rows %}
+    <tr>
+        <td>{{ row.title }}</td>
+        <td>{{ row.author }}</td>
+        <td>{{ row.username }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
 </table>
 {% endblock %}
