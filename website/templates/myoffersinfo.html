@@ -16,10 +16,6 @@ Info
             <td>{{ query.author }}</td>
         </tr>
         <tr>
-            <td>Uploaded by</td>
-            <td>{{ query.username }}</td>
-        </tr>
-        <tr>
             <td>Date and Time of Upload:</td>
             <td>{{ query.date }}</td>
         </tr>
@@ -29,4 +25,5 @@ Info
         </tr>
     </table>
     <a href="/"><button class="btn btn-primary">Back</button></a>
+    <button style="background-color: red;" class="btn btn-info" action="submit">delete</button>
 {% endblock %}

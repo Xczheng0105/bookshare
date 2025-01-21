@@ -9,30 +9,26 @@ Home
 <br>
 <div style="justify-self: center;">
     <a href="/add"><button class="btn btn-primary">Add an Exchange Offer!</button></a>
-    <a href="/myoffers"><button class="btn btn-primary">View My Offers</button></a>
 </div>
 <br>
-<h2 align ="center">Exchange offers available:</h2>
+<h2 align ="center">My Offers:</h2>
 
 <table class="table", style="text-align: center;">
     <tr align="center">
         <th>Title</th>
         <th>Author</th>
-        <th>Uploaded by:</th>
-        <th></th>
         <th></th>
     </tr>
     {% for row in rows %}
     <form method="post">
         <tr>
             <td>{{ row.title }}</td>
-            <td>{{ row.author }}</td>
-            <td>{{ row.username }}</td>
+            <td>{{ row.author }}</td>       
             <td>
                 <input name="id" style="display: none" type="number" value='{{ row.id }}'></input>
                 <button class="btn btn-info" action="submit">more info</button>
             </td>
-        </tr>
+        </tr> 
     </form>
     {% endfor %}
 </table>

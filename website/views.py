@@ -15,6 +15,16 @@ def home():
     else:
         rows = db.session.execute(text('SELECT offer.id, offer.title, offer.author, user.username FROM offer JOIN user ON user.id=offer.userid WHERE offer.userid != :uid'), {'uid': current_user.id})
         return render_template("index.html", user=current_user, rows=rows)
+    
+@views.route('/myoffers', methods=['GET', 'POST'])
+@login_required
+def myoffers():
+    if request.method == 'POST':
+        id = request.form.get("id")
+        return redirect(url_for('views.myoffersinfo', id=id))
+    else:
+        rows = db.session.execute(text('SELECT id, title, author FROM offer WHERE userid = :uid'), {'uid': current_user.id})
+        return render_template("myoffers.html", rows=rows, user=current_user)
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -46,6 +56,13 @@ def add():
 @login_required
 def info():
     oid = int(request.args.get('id'))
-    query = db.session.execute(text('SELECT offer.title, offer.author, user.username, user.contactinfo FROM offer JOIN user ON user.id=offer.userid WHERE offer.id = :oid'), {'oid': oid}).first()
+    query = db.session.execute(text('SELECT offer.title, offer.author, offer.date, user.username, user.contactinfo FROM offer JOIN user ON user.id=offer.userid WHERE offer.id = :oid'), {'oid': oid}).first()
     return render_template("info.html", user=current_user, query=query)
+
+@views.route('/myoffersinfo', methods=['GET'])
+@login_required
+def myoffersinfo():
+    oid = int(request.args.get('id'))
+    query = db.session.execute(text('SELECT title, author, date FROM offer WHERE id = :oid'), {'oid': oid}).first()
+    return render_template("myoffersinfo.html", user=current_user, query=query)
 
