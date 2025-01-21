@@ -137,6 +137,7 @@ def requestinfo():
     offered_title = db.session.execute(text('SELECT title FROM offer WHERE id = :id'), {'id': req.offered_id}).first().title
     offered_author = db.session.execute(text('SELECT author FROM offer WHERE id = :id'), {'id': req.offered_id}).first().author
     requester = db.session.execute(text('SELECT username FROM user WHERE id = :id'), {'id': req.requester_id}).first().username
+    requester_info = db.session.execute(text('SELECT contactinfo FROM user WHERE id = :id'), {'id': req.requester_id}).first().contactinfo
     
     if request.method == 'POST':
         db.session.execute(text('DELETE FROM offer WHERE id=:id'), {'id': req.wanted_id})
@@ -153,6 +154,7 @@ def requestinfo():
                             wanted_author=wanted_author,
                             offered_author=offered_author,
                             requester=requester, 
+                            requester_info=requester_info,
                             user=current_user
                             )
 
