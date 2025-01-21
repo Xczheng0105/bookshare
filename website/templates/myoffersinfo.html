@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Info
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">More Information</h1>
+    <table class="table">
+        <tr>
+            <td>Title</td>
+            <td>{{ query.title }}</td>
+        </tr>
+        <tr>
+            <td>Author</td>
+            <td>{{ query.author }}</td>
+        </tr>
+        <tr>
+            <td>Date and Time of Upload:</td>
+            <td>{{ query.date }}</td>
+        </tr>
+    </table>
+    <form method="post">
+        <input name="id" style="display: none" type="number" value='{{ query.id }}'></input>
+        <button style="background-color: red;" class="btn btn-primary" action="submit">Delete</button>
+    </form>
+    <br>
+    <a href="/myoffers"><button class="btn btn-primary">Back</button></a>
+    
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Exchange
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">Exchange</h1>
+    <form method="post">
+        <table class="table">
+            <tr>   
+                <td>Title Requested</td>
+                <td>
+                    {{ offer.title }}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Title Offered</td>
+                <td>
+                    <select class="form-select mx-auto w-auto" name=offered_title>
+                        <option disabled selected>Choose a Title...</option>
+                        {% for item in avail %}
+                        <option>
+                            {{ item.title }}
+                            <input name="offered_id" style="display: none" type="number" value='{{ item.id }}'></input>
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <h6 align="center">
+                        Note: if you don't see anything in the dropdown, it means you haven't added any books for offer yet!
+                    </h6>
+                </td>
+                
+            </tr>
+        </table>
+        <input name="poster_id" style="display: none" type="number" value='{{ offer.userid }}'></input>
+        <button class="btn btn-success" action="submit">Confirm Request!</button>   
+    </form>
+    
+{% endblock %}
