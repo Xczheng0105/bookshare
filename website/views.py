@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 from flask_login import login_required, current_user
-from .models import Offer
+from .models import Offer, Request
 from .models import db
 from sqlalchemy import text
 
@@ -25,7 +25,33 @@ def myoffers():
     else:
         rows = db.session.execute(text('SELECT id, title, author FROM offer WHERE userid = :uid'), {'uid': current_user.id})
         return render_template("myoffers.html", rows=rows, user=current_user)
+    
+@views.route('/info', methods=['GET', 'POST'])
+@login_required
+def info():
+    if request.method == 'POST':
+        id = int(request.args.get("id"))
+        return redirect(url_for('views.exchange', id=id))
+    else:
+        id = int(request.args.get("id"))
+        query = db.session.execute(text('SELECT * FROM offer JOIN user ON user.id=offer.userid WHERE offer.id = :id'), {'id':id}).first()
+        return render_template("info.html", user=current_user, query=query)
 
+@views.route('/myoffersinfo', methods=['GET', 'POST'])
+@login_required
+def myoffersinfo():
+    if request.method == 'POST':
+        # Deletion of a user's own offer
+        id = request.form.get("id")
+        print(id)
+        db.session.execute(text('DELETE FROM offer WHERE id = :id'), {'id': id})
+        db.session.commit()
+        return redirect(url_for('views.myoffers'))
+    else:
+        oid = int(request.args.get('id'))
+        query = db.session.execute(text('SELECT id, title, author, date FROM offer WHERE id = :oid'), {'oid': oid}).first()
+        return render_template("myoffersinfo.html", user=current_user, query=query)
+    
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -52,25 +78,31 @@ def add():
     else:
         return render_template("add.html", user=current_user)
     
-@views.route('/info', methods=['GET'])
+@views.route('/exchange', methods=['GET', 'POST'])
 @login_required
-def info():
-    oid = int(request.args.get('id'))
-    query = db.session.execute(text('SELECT offer.title, offer.author, offer.date, user.username, user.contactinfo FROM offer JOIN user ON user.id=offer.userid WHERE offer.id = :oid'), {'oid': oid}).first()
-    return render_template("info.html", user=current_user, query=query)
-
-@views.route('/myoffersinfo', methods=['GET', 'POST'])
-@login_required
-def myoffersinfo():
+def exchange():
     if request.method == 'POST':
-        # Deletion of a user's own offer
-        id = request.form.get("id")
-        print(id)
-        db.session.execute(text('DELETE FROM offer WHERE id = :id'), {'id': id})
+        wid = int(request.args.get("id"))
+        offered_title = request.form.get("offered_title")
+        if not offered_title:
+            flash("You need to choose something to exchange!", category='error')
+            return redirect(url_for('views.exchange', id=wid))
+        
+        pid = request.form.get("poster_id")
+        rid = current_user.id
+        oid = request.form.get("offered_id")
+        wid = int(request.args.get("id"))
+        
+        
+        
+        new_request = Request(poster_id=pid, requester_id=rid, offered_id=oid, wanted_id=wid)
+        db.session.add(new_request)
         db.session.commit()
-        return redirect(url_for('views.myoffers'))
+
+        return redirect("/")
     else:
-        oid = int(request.args.get('id'))
-        query = db.session.execute(text('SELECT id, title, author, date FROM offer WHERE id = :oid'), {'oid': oid}).first()
-        return render_template("myoffersinfo.html", user=current_user, query=query)
+        id = int(request.args.get("id"))
+        offer = db.session.execute(text('SELECT * FROM offer JOIN user ON user.id = offer.userid WHERE offer.id = :id'), {'id': id}).first()
+        avail = db.session.execute(text('SELECT * FROM offer WHERE userid = :id'), {'id': current_user.id})
+        return render_template("exchange.html", user=current_user, avail=avail, offer=offer)
 
