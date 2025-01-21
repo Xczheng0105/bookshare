@@ -96,7 +96,6 @@ def exchange():
         new_request = Request(poster_id=pid, requester_id=rid, offered_id=oid, wanted_id=wid)
         db.session.add(new_request)
         db.session.commit()
-
         return redirect("/")
     else:
         id = int(request.args.get("id"))
@@ -129,7 +128,8 @@ def requestinfo():
     if request.method == 'POST':
         db.session.execute(text('DELETE FROM offer WHERE id=:id'), {'id': req.wanted_id})
         db.session.execute(text('DELETE FROM offer WHERE id=:id'), {'id': req.offered_id})
-        db.session.execute(text('DELETE FROM request WHERE id=:id'), {'id': id})
+        db.session.execute(text('DELETE FROM request WHERE wanted_id=:id'), {'id': req.wanted_id})
+        db.session.execute(text('DELETE FROM request WHERE offered_id=:id'), {'id': req.offered_id})
         db.session.commit()
         return redirect(url_for('views.requests'))
     else:
