@@ -1,34 +1,32 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Home
+Requests
 {% endblock %}
 
 {% block content %}
-<h1 align="center">Welcome to bookshare!</h1>
+<h1 align="center">Pending Exchange Requests</h1>
 <br>
-<div style="justify-self: center;">
-    <a href="/add"><button class="btn btn-primary">Add a Book!</button></a>
-</div>
-<br>
-<h2 align ="center">My Offers:</h2>
-
 <table class="table", style="text-align: center;">
     <tr align="center">
-        <th>Title</th>
+        <th>Book Wanted</th>
         <th>Author</th>
+        <th>From:</th>
+        <th>Date:</th>
         <th></th>
     </tr>
     {% for row in rows %}
     <form method="post">
         <tr>
             <td>{{ row.title }}</td>
-            <td>{{ row.author }}</td>       
+            <td>{{ row.author }}</td>
+            <td>{{ row.username }}</td>
+            <td>{{ row.date }}</td>
             <td>
-                <input name="id" style="display: none" type="number" value='{{ row.id }}'></input>
+                <input name="row_id" style="display: none" type="number" value='{{ row.id }}'></input>
                 <button class="btn btn-info" action="submit">more info</button>
             </td>
-        </tr> 
+        </tr>
     </form>
     {% endfor %}
 </table>
