@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 from flask_login import login_required, current_user
-from .models import Offer, Request
+from .models import Offer, Request, User
 from .models import db
 from sqlalchemy import text
 
@@ -16,6 +16,19 @@ def home():
         rows = db.session.execute(text('SELECT offer.id, offer.title, offer.author, user.username FROM offer JOIN user ON user.id=offer.userid WHERE offer.userid != :uid'), {'uid': current_user.id})
         return render_template("index.html", user=current_user, rows=rows)
     
+@views.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        new_contact_info = request.form.get('updateinfo')
+        current_contact = User.query.filter_by(id=current_user.id).first()
+        current_contact.contactinfo = new_contact_info
+        db.session.commit()
+        flash("Profile updated!", category='success')
+        return redirect("/")
+    else:
+        contact_info = db.session.execute(text('SELECT contactinfo FROM user WHERE id=:id'), {'id': current_user.id}).first().contactinfo
+        return render_template("profile.html", contact_info = contact_info, user=current_user)
 @views.route('/myoffers', methods=['GET', 'POST'])
 @login_required
 def myoffers():
