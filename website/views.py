@@ -59,10 +59,18 @@ def info():
     query = db.session.execute(text('SELECT offer.title, offer.author, offer.date, user.username, user.contactinfo FROM offer JOIN user ON user.id=offer.userid WHERE offer.id = :oid'), {'oid': oid}).first()
     return render_template("info.html", user=current_user, query=query)
 
-@views.route('/myoffersinfo', methods=['GET'])
+@views.route('/myoffersinfo', methods=['GET', 'POST'])
 @login_required
 def myoffersinfo():
-    oid = int(request.args.get('id'))
-    query = db.session.execute(text('SELECT title, author, date FROM offer WHERE id = :oid'), {'oid': oid}).first()
-    return render_template("myoffersinfo.html", user=current_user, query=query)
+    if request.method == 'POST':
+        # Deletion of a user's own offer
+        id = request.form.get("id")
+        print(id)
+        db.session.execute(text('DELETE FROM offer WHERE id = :id'), {'id': id})
+        db.session.commit()
+        return redirect(url_for('views.myoffers'))
+    else:
+        oid = int(request.args.get('id'))
+        query = db.session.execute(text('SELECT id, title, author, date FROM offer WHERE id = :oid'), {'oid': oid}).first()
+        return render_template("myoffersinfo.html", user=current_user, query=query)
 
