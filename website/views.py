@@ -108,10 +108,38 @@ def exchange():
 @login_required
 def requests():
     if request.method == 'POST':
-        id = request.form.get("id")
+        id = request.form.get("row_id")
         return redirect(url_for('views.requestinfo', id=id))
     else:
-        rows = db.session.execute(text('SELECT * FROM request JOIN user ON request.requester_id=user.id JOIN offer ON request.wanted_id=offer.id WHERE poster_id=:id'),
+        rows = db.session.execute(text('SELECT request.id, request.date, user.username, offer.title, offer.author FROM request JOIN user ON request.requester_id=user.id JOIN offer ON request.wanted_id=offer.id WHERE poster_id=:id'),
                                   {'id': current_user.id})
         return render_template("requests.html", rows=rows, user=current_user)
+    
+@views.route('/requestinfo', methods=['GET', 'POST'])
+@login_required
+def requestinfo():
+    id = int(request.args.get("id"))
+    req = db.session.execute(text('SELECT * FROM request WHERE id=:id'), {'id': id}).first()
+    wanted_title = db.session.execute(text('SELECT title FROM offer WHERE id = :id'), {'id': req.wanted_id}).first().title
+    wanted_author = db.session.execute(text('SELECT author FROM offer WHERE id = :id'), {'id': req.wanted_id}).first().author
+    offered_title = db.session.execute(text('SELECT title FROM offer WHERE id = :id'), {'id': req.offered_id}).first().title
+    offered_author = db.session.execute(text('SELECT author FROM offer WHERE id = :id'), {'id': req.offered_id}).first().author
+    requester = db.session.execute(text('SELECT username FROM user WHERE id = :id'), {'id': req.requester_id}).first().username
+    
+    if request.method == 'POST':
+        db.session.execute(text('DELETE FROM offer WHERE id=:id'), {'id': req.wanted_id})
+        db.session.execute(text('DELETE FROM offer WHERE id=:id'), {'id': req.offered_id})
+        db.session.execute(text('DELETE FROM request WHERE id=:id'), {'id': id})
+        db.session.commit()
+        return redirect(url_for('views.requests'))
+    else:
+        return render_template("requestinfo.html", 
+                            req=req, 
+                            offered_title=offered_title, 
+                            wanted_title=wanted_title, 
+                            wanted_author=wanted_author,
+                            offered_author=offered_author,
+                            requester=requester, 
+                            user=current_user
+                            )
 

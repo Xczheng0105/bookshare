@@ -18,12 +18,11 @@ Exchange
             <tr>
                 <td>Title Offered</td>
                 <td>
-                    <select class="form-select mx-auto w-auto" name=offered_title>
+                    <select class="form-select mx-auto w-auto" id="offered_title" name="offered_title" onchange="updateInput(event)">
                         <option disabled selected>Choose a Title...</option>
                         {% for item in avail %}
-                        <option>
-                            {{ item.title }}
-                            <input name="offered_id" style="display: none" type="number" value='{{ item.id }}'></input>
+                        <option value="{{ item.id }}">
+                                {{ item.title }}
                         </option>
                         {% endfor %}
                     </select>
@@ -37,7 +36,12 @@ Exchange
             </tr>
         </table>
         <input name="poster_id" style="display: none" type="number" value='{{ offer.userid }}'></input>
+        <input id="offered_id" name="offered_id" style="display: none" type="number"></input>
         <button class="btn btn-success" action="submit">Confirm Request!</button>   
     </form>
-    
-{% endblock %}
+    <script>
+        function updateInput(e) {
+            document.getElementById("offered_id").value = e.target.value;
+        }
+    </script>
+{% endblock %};

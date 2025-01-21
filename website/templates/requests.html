@@ -7,9 +7,10 @@ Requests
 {% block content %}
 <h1 align="center">Pending Exchange Requests</h1>
 <br>
+{{ rows }}
 <table class="table", style="text-align: center;">
     <tr align="center">
-        <th>Title</th>
+        <th>Book Wanted</th>
         <th>Author</th>
         <th>From:</th>
         <th>Date:</th>
@@ -23,7 +24,7 @@ Requests
             <td>{{ row.username }}</td>
             <td>{{ row.date }}</td>
             <td>
-                <input name="id" style="display: none" type="number" value='{{ row.id }}'></input>
+                <input name="row_id" style="display: none" type="number" value='{{ row.id }}'></input>
                 <button class="btn btn-info" action="submit">more info</button>
             </td>
         </tr>

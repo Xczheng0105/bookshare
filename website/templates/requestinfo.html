@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Info
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">Request Details</h1>
+    <table class="table">
+        <tr>
+            <td>Book Wanted:</td>
+            <td>{{ wanted_title }}</td>
+            <td>by</td>
+            <td>{{ wanted_author }}</td>
+        </tr>
+        <tr>
+            <td>Book Offered:</td>
+            <td>{{ offered_title }}</td>
+            <td>by</td>
+            <td>{{ offered_author }}</td>
+        </tr>
+        <tr>
+            <td>Requested by:</td>
+            <td>{{ requester }}</td>
+        </tr>
+        <tr>
+            <td>Date and Time of Request:</td>
+            <td>{{ req.date }}</td>
+        </tr>
+        <tr>
+            <td>Contact Information</td>
+            <td></td>
+        </tr>
+    </table>
+    <a href="/requests"><button class="btn btn-primary">Back</button></a>
+    <br><br>
+    <form method="post">
+        <button id="confirm-button" onclick="return getConfirmation()" class="btn btn-info">Confirm Exchange!</button>
+    </form>
+    <script>
+        function getConfirmation() {
+            return confirm("Are you sure about proceeding with this exchange? This action is irreversible!");
+        }
+    </script>
+{% endblock %}
