@@ -21,12 +21,17 @@ Home
         <th></th>
     </tr>
     {% for row in rows %}
-    <tr>
-        <td>{{ row.title }}</td>
-        <td>{{ row.author }}</td>
-        <td>{{ row.username }}</td>
-        <td></td>
-    </tr>
+    <form method="post">
+        <tr>
+            <td>{{ row.title }}</td>
+            <td>{{ row.author }}</td>
+            <td>{{ row.username }}</td>
+            <td>
+                <input name="id" style="display: none" type="number" value='{{ row.id }}'></input>
+                <button class="btn btn-info" action="submit">more info</button>
+            </td>
+        </tr>
+    </form>
     {% endfor %}
 </table>
 {% endblock %}

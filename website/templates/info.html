@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Info
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">More Information</h1>
+    <table class="table">
+        <tr>
+            <td>Title</td>
+            <td>{{ query.title }}</td>
+        </tr>
+        <tr>
+            <td>Author</td>
+            <td>{{ query.author }}</td>
+        </tr>
+        <tr>
+            <td>Uploaded by</td>
+            <td>{{ query.username }}</td>
+        </tr>
+        <tr>
+            <td>Contact Information</td>
+            <td></td>
+        </tr>
+    </table>
+{% endblock %}
