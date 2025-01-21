@@ -93,8 +93,6 @@ def exchange():
         oid = request.form.get("offered_id")
         wid = int(request.args.get("id"))
         
-        
-        
         new_request = Request(poster_id=pid, requester_id=rid, offered_id=oid, wanted_id=wid)
         db.session.add(new_request)
         db.session.commit()
@@ -105,4 +103,15 @@ def exchange():
         offer = db.session.execute(text('SELECT * FROM offer JOIN user ON user.id = offer.userid WHERE offer.id = :id'), {'id': id}).first()
         avail = db.session.execute(text('SELECT * FROM offer WHERE userid = :id'), {'id': current_user.id})
         return render_template("exchange.html", user=current_user, avail=avail, offer=offer)
+
+@views.route('/requests', methods=['GET', 'POST'])
+@login_required
+def requests():
+    if request.method == 'POST':
+        id = request.form.get("id")
+        return redirect(url_for('views.requestinfo', id=id))
+    else:
+        rows = db.session.execute(text('SELECT * FROM request JOIN user ON request.requester_id=user.id JOIN offer ON request.wanted_id=offer.id WHERE poster_id=:id'),
+                                  {'id': current_user.id})
+        return render_template("requests.html", rows=rows, user=current_user)
 
